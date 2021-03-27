@@ -1,57 +1,41 @@
-import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
-import './App.css';
+import React, { useEffect, useMemo, useState } from "react";
+import { CssBaseline, useMediaQuery } from "@material-ui/core";
+import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+// import logo from "./logo.svg";
+// import { Counter } from "./features/counter/Counter";
+// import "./App.css";
+import { Test } from "./features/test/Test";
 
 function App() {
+  const [prefersDarkState, setprefersDarkState] = useState<
+    null | "light" | "dark"
+  >(null);
+  const prefersDarkQuery = useMediaQuery("(prefers-color-scheme: dark)");
+  useEffect(() => {
+    setprefersDarkState(null);
+  }, [prefersDarkQuery]);
+
+  const theme = useMemo(
+    () =>
+      createMuiTheme({
+        palette: {
+          type:
+            prefersDarkState !== null
+              ? prefersDarkState
+              : prefersDarkQuery
+              ? "dark"
+              : "light",
+        },
+      }),
+    [prefersDarkQuery, prefersDarkState]
+  );
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <CssBaseline>
+        <Test setprefersDarkState={setprefersDarkState} />
+      </CssBaseline>
+    </ThemeProvider>
   );
 }
 
